@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#11151d">
+<title>Giga Duelo — Uma série, vários jogos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<style>
+:root{--ink:#11151d;--panel:#1b202a;--panel2:#222833;--line:#353c49;--muted:#9ba3ae;--paper:#f1efe8;--lime:#d4ff63;--coral:#ff735f;--blue:#8bb8ff;--gold:#f3c96a;--radius:18px;--shadow:0 28px 80px #080a0e66}
+*{box-sizing:border-box}html{background:var(--ink);color:var(--paper);font-family:"DM Sans",sans-serif}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 65% -10%,#283044 0,transparent 44%),var(--ink)}button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+.shell{width:min(1200px,calc(100% - 48px));margin:auto}.topbar{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:12px;color:var(--paper);text-decoration:none}.brand-mark{width:38px;height:38px;border-radius:12px;background:var(--lime);color:var(--ink);display:grid;place-items:center;font:700 17px "Space Grotesk";letter-spacing:-1px;transform:rotate(-5deg)}.brand-name{font:700 17px "Space Grotesk";letter-spacing:-.4px}.brand-name span{color:var(--lime)}.top-meta{display:flex;align-items:center;gap:18px;color:var(--muted);font-size:13px}.live-dot{width:8px;height:8px;border-radius:50%;background:#6adb9a;display:inline-block;box-shadow:0 0 0 4px #6adb9a1c;margin-right:7px}
+.btn{border:0;border-radius:12px;padding:13px 18px;font-weight:700;transition:transform .15s,filter .15s,background .15s}.btn:hover{transform:translateY(-2px);filter:brightness(1.05)}.btn-primary{background:var(--lime);color:var(--ink)}.btn-secondary{background:#ffffff0d;color:var(--paper);border:1px solid var(--line)}.btn-quiet{background:transparent;color:var(--muted);padding:10px 12px}.btn-coral{background:var(--coral);color:var(--ink)}.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.hero{display:grid;grid-template-columns:1fr 1.02fr;gap:58px;align-items:center;padding:70px 0 64px}.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 10px;border:1px solid #ffffff18;border-radius:999px;color:var(--lime);font:500 11px "DM Mono",monospace;letter-spacing:.09em;text-transform:uppercase}.eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--lime)}h1,h2,h3,p{margin-top:0}h1{font:700 clamp(42px,5.2vw,68px)/1.02 "Space Grotesk";letter-spacing:-3.2px;margin:21px 0 20px;max-width:610px}h1 em{font-style:normal;color:var(--lime)}.hero-copy{color:#b4bbc5;font-size:17px;line-height:1.65;max-width:490px;margin-bottom:30px}.hero-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.hero-actions .btn{padding:15px 20px}.fineprint{margin-top:19px;color:#77808d;font:11px "DM Mono",monospace;letter-spacing:.02em}
+.art{position:relative;min-height:410px;display:grid;place-items:center}.art-glow{position:absolute;width:340px;height:340px;border-radius:50%;background:#d4ff6310;filter:blur(35px)}.hero-board{position:relative;width:min(390px,90%);aspect-ratio:1;background:#252b36;border:1px solid #ffffff20;border-radius:26px;padding:14px;box-shadow:var(--shadow);transform:rotate(3deg)}.hero-board:before{content:"";position:absolute;inset:-12px 16px 15px -12px;border:1px solid #d4ff6345;border-radius:29px;z-index:-1;transform:rotate(-6deg)}.mini-grid{height:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:7px}.mini-cell{border-radius:12px;background:#303744;display:grid;place-items:center;font-size:clamp(25px,4vw,43px);font-family:serif}.mini-cell:nth-child(1),.mini-cell:nth-child(6),.mini-cell:nth-child(11),.mini-cell:nth-child(16){background:#d4ff63;color:var(--ink)}.mini-cell:nth-child(3),.mini-cell:nth-child(8),.mini-cell:nth-child(9),.mini-cell:nth-child(14){background:#ff735f;color:var(--ink)}.float-tag{position:absolute;background:#252b36;border:1px solid #ffffff1d;border-radius:13px;padding:12px 15px;box-shadow:0 15px 38px #0005}.float-tag span{display:block;color:var(--muted);font:10px "DM Mono";text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}.float-tag strong{font:700 14px "Space Grotesk"}.tag-top{right:-3px;top:38px}.tag-bottom{left:3px;bottom:35px}.tag-bottom strong{color:var(--lime)}
+.how{border-top:1px solid #ffffff12;padding:28px 0 31px;display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.how-item{display:flex;gap:14px;align-items:flex-start}.how-no{color:var(--lime);font:12px "DM Mono";padding-top:3px}.how-item strong{display:block;font:600 14px "Space Grotesk";margin-bottom:5px}.how-item p{font-size:12px;line-height:1.5;color:var(--muted);margin:0}
+.footer{border-top:1px solid #ffffff12;padding:18px 0 24px;color:#68717e;font:10px "DM Mono";display:flex;justify-content:space-between;letter-spacing:.04em}
+.modal-backdrop{position:fixed;inset:0;z-index:20;background:#080a0dba;backdrop-filter:blur(8px);display:grid;place-items:center;padding:20px}.modal{width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:28px;box-shadow:var(--shadow)}.modal h2{font:700 27px "Space Grotesk";letter-spacing:-.8px;margin:10px 0}.modal p{color:var(--muted);line-height:1.55;font-size:14px}.modal .eyebrow{font-size:10px}.field-label{display:block;font:11px "DM Mono";text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:22px 0 8px}.field{width:100%;border:1px solid var(--line);background:#11151d;color:var(--paper);padding:14px;border-radius:11px}.modal-actions{display:flex;gap:10px;margin-top:18px}.modal-actions>*{flex:1}.error{color:var(--coral)!important;min-height:20px;font-size:12px!important;margin:10px 0 0}
+.arena{padding:26px 0 50px}.arena-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:21px}.room-id{font:11px "DM Mono";color:var(--muted)}.room-id b{color:var(--lime);font-weight:500}.arena-actions{display:flex;gap:8px}.scorebar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:17px 22px;margin-bottom:18px}.player-card{display:flex;align-items:center;gap:13px}.player-card.right{justify-content:flex-end;text-align:right}.avatar{width:43px;height:43px;border-radius:14px;background:#d4ff63;color:var(--ink);display:grid;place-items:center;font:700 18px "Space Grotesk"}.avatar.p2{background:var(--coral)}.player-name{font:700 15px "Space Grotesk";max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.player-label{font:10px "DM Mono";color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.08em}.score{font:700 32px "Space Grotesk";line-height:1}.points{display:flex;gap:5px;margin-top:7px}.point{width:8px;height:8px;background:#454c57;border-radius:50%}.point.on.p1{background:var(--lime)}.point.on.p2{background:var(--coral)}.versus{font:11px "DM Mono";color:#66707f;padding:0 27px}
+.match-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;align-items:start}.play-panel,.side-panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden}.play-head{padding:18px 20px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.game-title{display:flex;align-items:center;gap:12px}.game-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;background:#ffffff0b;font-size:20px}.game-title h2{font:700 19px "Space Grotesk";letter-spacing:-.4px;margin:0}.game-title p{font:10px "DM Mono";color:var(--muted);margin:4px 0 0;text-transform:uppercase;letter-spacing:.08em}.turn-pill{border:1px solid var(--line);border-radius:999px;padding:8px 11px;font:10px "DM Mono";color:var(--lime);white-space:nowrap}.turn-pill.wait{color:var(--muted)}
+.board-zone{padding:20px;display:grid;place-items:center;min-height:430px;background:radial-gradient(ellipse at center,#282e39 0,transparent 74%)}.board{width:min(100%,520px);aspect-ratio:1;border:7px solid #353c49;border-radius:10px;box-shadow:0 17px 36px #080a0c70;overflow:hidden;user-select:none}.chess-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr)}.square{position:relative;display:grid;place-items:center;padding:0;border:0;border-radius:0}.square.light{background:#e5dfcf}.square.dark{background:#7d8c83}.square.selected{box-shadow:inset 0 0 0 4px #d4ff63}.square.legal:after{content:"";position:absolute;width:27%;aspect-ratio:1;border-radius:50%;background:#11151d55}.square.has-piece.legal:after{width:88%;background:transparent;border:4px solid #d4ff63aa}.piece{position:relative;z-index:1;font:clamp(24px,5vw,53px)/1 Georgia,serif;filter:drop-shadow(0 2px 1px #0004)}.piece.white{color:#fffdf5;text-shadow:0 1px 2px #27302d,0 0 2px #222}.piece.black{color:#253029}.coord{position:absolute;bottom:2px;left:3px;font:8px "DM Mono";opacity:.72}.square.light .coord{color:#657365}.square.dark .coord{color:#f3f1e9}
+.drop-board{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;padding:12px;background:#28558b;border:7px solid #345e91;border-radius:18px;width:min(100%,520px);aspect-ratio:7/6;box-shadow:0 17px 36px #080a0c70}.drop-col{display:grid;grid-template-rows:repeat(6,1fr);gap:7px;min-width:0;padding:0;border:0;background:transparent}.drop-slot{border-radius:50%;background:#172c46;box-shadow:inset 0 3px 6px #060e1a99;display:grid;place-items:center}.disc{width:88%;height:88%;border-radius:50%;background:var(--lime);box-shadow:inset 0 -4px 0 #79962c66}.disc.p2{background:var(--coral);box-shadow:inset 0 -4px 0 #a3362b66}
+.reversi-board{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;background:#386451;border:7px solid #386451;border-radius:10px;padding:4px;width:min(100%,520px);aspect-ratio:1}.reversi-cell{border:0;border-radius:3px;background:#47775f;display:grid;place-items:center;padding:0}.stone{display:block;width:82%;aspect-ratio:1;border-radius:50%;background:#20272b;box-shadow:inset 0 -5px 0 #0004,0 2px 4px #15271e66}.stone.p2{background:#f3f0e6;box-shadow:inset 0 -5px 0 #99968f,0 2px 4px #15271e66}.reversi-cell.legal:after{content:"";width:20%;aspect-ratio:1;border-radius:50%;background:#d4ff63aa}
+.checkers-board{display:grid;grid-template-columns:repeat(8,1fr);grid-template-rows:repeat(8,1fr);width:min(100%,520px);aspect-ratio:1;border:7px solid #564a3e;border-radius:10px;overflow:hidden;box-shadow:0 17px 36px #080a0c70}.checker-square{border:0;display:grid;place-items:center;padding:0}.checker-square.light{background:#e7dfd0}.checker-square.dark{background:#89776a}.checker-square.selected{box-shadow:inset 0 0 0 4px var(--lime)}.checker-square.legal:after{content:"";width:25%;aspect-ratio:1;border-radius:50%;background:#d4ff63cc}.checker{width:72%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:clamp(13px,2.8vw,27px);font-weight:bold}.checker.p1{background:#d4ff63;color:#29311c;box-shadow:inset 0 -5px 0 #829c35}.checker.p2{background:#ff735f;color:#5a2019;box-shadow:inset 0 -5px 0 #a83c30}
+.play-foot{padding:13px 20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;color:var(--muted);font-size:11px}.play-foot .mono{font:10px "DM Mono"}
+.side-panel{padding:19px}.side-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.side-title h3{font:700 14px "Space Grotesk";margin:0}.series-label{font:9px "DM Mono";color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.progress-track{height:4px;background:#ffffff12;border-radius:10px;margin-bottom:17px;overflow:hidden}.progress-fill{height:100%;background:var(--lime);border-radius:10px;transition:width .3s}.game-list{display:grid;gap:7px}.game-row{display:grid;grid-template-columns:28px 27px 1fr auto;align-items:center;gap:9px;padding:10px;border:1px solid transparent;border-radius:11px;color:#8d96a3}.game-row.current{background:#d4ff630e;border-color:#d4ff6330;color:var(--paper)}.game-row.done{opacity:.48}.game-num{font:10px "DM Mono";color:#727c89}.game-mini-icon{font-size:16px}.game-row strong{font:600 11px "DM Sans"}.game-status{font:8px "DM Mono";text-transform:uppercase;color:var(--lime)}.side-rule{border-top:1px solid var(--line);margin:17px 0 14px}.side-note{font-size:11px;line-height:1.55;color:var(--muted);margin:0}.side-note b{color:var(--paper);font-weight:600}
+.result-card{margin-top:16px;border:1px solid #ffffff16;border-radius:13px;padding:13px;background:#ffffff06}.result-card h4{font:700 11px "Space Grotesk";margin:0 0 6px;color:var(--lime)}.result-card p{font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 10px}.result-actions{display:grid;gap:7px}.result-actions .btn{padding:10px 11px;font-size:11px}.choice-wait{font:10px "DM Mono";line-height:1.5;color:var(--muted)}.champion{text-align:center;padding:15px 10px}.champion .trophy{font-size:34px}.champion h3{color:var(--lime);font:700 17px "Space Grotesk";margin:9px 0 4px}.champion p{color:var(--muted);font-size:11px;margin:0}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:50;background:var(--paper);color:var(--ink);padding:12px 16px;border-radius:12px;font-size:12px;font-weight:700;transition:.2s;box-shadow:0 10px 30px #0005}.toast.show{opacity:1;transform:translate(-50%,0)}
+.wait-screen{text-align:center;padding:65px 20px}.wait-orbit{width:64px;height:64px;border:1px solid #ffffff22;border-radius:50%;margin:0 auto 20px;display:grid;place-items:center;position:relative}.wait-orbit:before{content:"";width:10px;height:10px;border-radius:50%;position:absolute;top:-4px;background:var(--lime);box-shadow:0 0 14px var(--lime)}.wait-orbit span{font-size:25px}.wait-screen h2{font:700 26px "Space Grotesk";margin-bottom:8px}.wait-screen p{font-size:13px;color:var(--muted);line-height:1.55;max-width:390px;margin:0 auto 20px}.invite-link{display:flex;gap:8px;max-width:480px;margin:0 auto 12px}.invite-link input{flex:1;min-width:0;background:#11151d;border:1px solid var(--line);color:var(--paper);border-radius:10px;padding:12px;font:11px "DM Mono"}
+@media(max-width:850px){.hero{gap:25px}.hero-board{width:min(330px,90%)}.match-layout{grid-template-columns:minmax(0,1fr) 245px}.board-zone{min-height:370px}.side-panel{padding:16px}}
+@media(max-width:680px){.shell{width:min(100% - 30px,560px)}.topbar{height:68px}.top-meta{font-size:11px}.top-meta .desktop-only{display:none}.hero{grid-template-columns:1fr;padding:43px 0 38px;gap:22px}.hero h1{font-size:48px;letter-spacing:-2.4px}.hero-copy{font-size:15px}.art{min-height:300px}.hero-board{width:280px}.float-tag.tag-top{right:0;top:17px}.float-tag.tag-bottom{left:0;bottom:22px}.how{grid-template-columns:1fr;gap:16px;padding:23px 0}.how-item p{font-size:12px}.footer{font-size:9px}.arena{padding:18px 0 35px}.arena-head{align-items:flex-start}.arena-actions .btn{padding:10px 11px;font-size:11px}.scorebar{padding:13px 11px}.avatar{width:36px;height:36px;border-radius:11px}.player-name{font-size:12px;max-width:100px}.player-label{font-size:8px}.score{font-size:25px}.versus{padding:0 9px}.points{gap:3px}.point{width:6px;height:6px}.match-layout{grid-template-columns:1fr}.side-panel{order:2}.game-list{grid-template-columns:1fr 1fr}.board-zone{min-height:0;padding:13px}.play-head{padding:13px}.game-title h2{font-size:16px}.game-icon{width:34px;height:34px}.play-foot{padding:11px 13px}.board{width:min(100%,470px)}.turn-pill{font-size:9px;padding:7px 9px}.side-panel{padding:16px}.result-card{margin-top:12px}}
+</style>
+</head>
+<body>
+<div class="shell" id="app"></div>
+<div class="toast" id="toast"></div>
+<div id="modal-root"></div>
+<script type="module">
+import { Chess } from "https://cdn.jsdelivr.net/npm/chess.js@1.4.0/dist/esm/chess.js";
+
+const GAMES = [
+  { id:"chess", name:"Xadrez", icon:"♞", hint:"Xeque-mate vence" },
+  { id:"connect4", name:"Quatro em linha", icon:"🔴", hint:"Alinha quatro peças" },
+  { id:"checkers", name:"Damas", icon:"◉", hint:"Captura todas as peças" },
+  { id:"reversi", name:"Reversi", icon:"⚫", hint:"Termina com mais peças" }
+];
+const PIECES = {wk:"♔",wq:"♕",wr:"♖",wb:"♗",wn:"♘",wp:"♙",bk:"♚",bq:"♛",br:"♜",bb:"♝",bn:"♞",bp:"♟"};
+let peer = null, conn = null, role = null, mySide = null, gameState = null;
+let chessEngine = null, selectedSquare = null, toastTimer = null;
+const app = document.getElementById("app");
+const modalRoot = document.getElementById("modal-root");
+
+function escapeHtml(value){return String(value||"").replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function isLocalAddress(){return location.protocol==="file:"||["localhost","127.0.0.1","::1"].includes(location.hostname)}
+function initials(name){return (name||"?").trim().slice(0,1).toUpperCase()||"?"}
+function showToast(message){const t=document.getElementById("toast");t.textContent=message;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2300)}
+function shuffle(items){const a=items.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function gameMeta(id){return GAMES.find(g=>g.id===id)||GAMES[0]}
+function randomSide(){return Math.random()<.5?0:1}
+function newGame(id){
+  const starter=randomSide();
+  if(id==="chess"){chessEngine=new Chess();return {id:id,starter:starter,fen:chessEngine.fen()}}
+  if(id==="connect4")return {id:id,starter:starter,turn:starter,board:Array.from({length:6},()=>Array(7).fill(0))}
+  if(id==="checkers"){
+    const board=Array.from({length:8},()=>Array(8).fill(0));
+    for(let r=0;r<3;r++)for(let c=0;c<8;c++)if((r+c)%2===1)board[r][c]=2;
+    for(let r=5;r<8;r++)for(let c=0;c<8;c++)if((r+c)%2===1)board[r][c]=1;
+    return {id:id,starter:starter,turn:starter,board:board,forced:null}
+  }
+  const board=Array.from({length:8},()=>Array(8).fill(0));
+  board[3][3]=2;board[3][4]=1;board[4][3]=1;board[4][4]=2;
+  return {id:"reversi",starter:starter,turn:starter,board:board}
+}
+function makeInitialState(hostName){
+  const order=shuffle(GAMES.map(g=>g.id));
+  return {phase:"waiting",names:[hostName,""],scores:[0,0],order:order,roundIndex:0,game:newGame(order[0]),votes:[null,null],result:null,history:[],room:""}
+}
+function currentGameName(){return gameMeta(gameState.game.id).name}
+function sendState(){
+  if(role!=="host"||!gameState)return;
+  if(conn&&conn.open)conn.send({type:"state",state:gameState});
+  renderArena();
+}
+function setPeerStatus(isConnected){const el=document.getElementById("connection-status");if(!el)return;el.innerHTML=isConnected?'<span class="live-dot"></span>Ligação estabelecida':'<span class="live-dot" style="background:var(--gold)"></span>A aguardar adversário'}
+function renderHome(){
+  app.innerHTML = '<header class="topbar"><a class="brand" href="#"><span class="brand-mark">GD</span><span class="brand-name">GIGA<span>DUELO</span></span></a><div class="top-meta"><span><i class="live-dot"></i>Desafios 1 contra 1</span><span class="desktop-only">Uma série, vários tabuleiros</span></div></header>'+
+  '<main><section class="hero"><div><div class="eyebrow">O teu próximo rival está à distância de um link</div><h1>Uma série.<br>Vários jogos.<br><em>Um campeão.</em></h1><p class="hero-copy">Desafia alguém para um duelo de tabuleiro: xadrez, damas, Reversi e Quatro em linha. A ordem muda em cada série. Cada vitória vale um ponto. Primeiro a três, ganha.</p><div class="hero-actions"><button class="btn btn-primary" id="create-btn">Criar duelo <span aria-hidden="true">↗</span></button><button class="btn btn-secondary" id="join-open-btn">Tenho um convite</button></div><p class="fineprint">GRÁTIS · SEM REGISTO · JOGA COM QUALQUER PESSOA</p></div><div class="art"><div class="art-glow"></div><div class="hero-board"><div class="mini-grid"><div class="mini-cell">♜</div><div class="mini-cell">♞</div><div class="mini-cell">♟</div><div class="mini-cell">♖</div><div class="mini-cell">♘</div><div class="mini-cell">♟</div><div class="mini-cell">♕</div><div class="mini-cell">♙</div><div class="mini-cell">♙</div><div class="mini-cell">♗</div><div class="mini-cell">♟</div><div class="mini-cell">♘</div><div class="mini-cell">♔</div><div class="mini-cell">♙</div><div class="mini-cell">♖</div><div class="mini-cell">♟</div></div></div><div class="float-tag tag-top"><span>Vitória por série</span><strong>Primeiro a 3 pontos</strong></div><div class="float-tag tag-bottom"><span>Próxima partida</span><strong>Surpresa 🎲</strong></div></div></section>'+
+  '<section class="how"><div class="how-item"><span class="how-no">01</span><div><strong>Cria e partilha</strong><p>Abre uma sala e envia o link ao teu rival, onde quer que esteja.</p></div></div><div class="how-item"><span class="how-no">02</span><div><strong>Joga a série</strong><p>Quatro jogos em ordem aleatória. Uma vitória, um ponto.</p></div></div><div class="how-item"><span class="how-no">03</span><div><strong>Desforra ou segue</strong><p>Se os dois quiserem, há desforra. Ganha quem chegar primeiro aos três.</p></div></div></section></main>'+
+  '<footer class="footer"><span>GIGA DUELO · 1v1</span><span>FEITO PARA BONS RIVAIS</span></footer>';
+  document.getElementById("create-btn").onclick=()=>openNameModal("create");
+  document.getElementById("join-open-btn").onclick=()=>openNameModal("join");
+}
+function openNameModal(mode){
+  const roomId=new URLSearchParams(location.search).get("room");
+  const joining=mode==="join"&&!!roomId;
+  const title=mode==="create"?"Cria a tua sala":"Entra no duelo";
+  const copy=mode==="create"?"Escolhe um nome. Depois partilha o link da sala com o teu rival.":"Escreve o teu nome para entrares na partida.";
+  modalRoot.innerHTML='<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true"><div class="eyebrow">'+(mode==="create"?"NOVO DUELO":"CONVITE RECEBIDO")+'</div><h2>'+title+'</h2><p>'+copy+'</p><label class="field-label" for="player-name">O teu nome</label><input class="field" id="player-name" maxlength="18" placeholder="Ex.: Rui" autocomplete="nickname"><p class="error" id="modal-error"></p><div class="modal-actions"><button class="btn btn-secondary" id="cancel-modal">Cancelar</button><button class="btn btn-primary" id="submit-modal">'+(mode==="create"?"Criar sala":"Entrar na sala")+' ↗</button></div></section></div>';
+  document.getElementById("cancel-modal").onclick=()=>modalRoot.innerHTML="";
+  document.getElementById("submit-modal").onclick=()=>{
+    const name=document.getElementById("player-name").value.trim();
+    if(!name){document.getElementById("modal-error").textContent="Escreve um nome para continuares.";return}
+    modalRoot.innerHTML="";
+    if(mode==="create")createRoom(name);else if(joining)joinRoom(name,roomId);else showToast("Abre o link de convite para entrar numa sala.");
+  };
+  document.getElementById("player-name").focus();
+}
+function showJoinPrompt(roomId){
+  modalRoot.innerHTML='<div class="modal-backdrop"><section class="modal" role="dialog" aria-modal="true"><div class="eyebrow">CONVITE RECEBIDO</div><h2>Entra no duelo</h2><p>Escolhe um nome e liga-te à sala do teu rival.</p><label class="field-label" for="player-name">O teu nome</label><input class="field" id="player-name" maxlength="18" placeholder="Ex.: Alex" autocomplete="nickname"><p class="error" id="modal-error"></p><div class="modal-actions"><button class="btn btn-secondary" id="cancel-modal">Voltar</button><button class="btn btn-primary" id="submit-modal">Entrar na sala ↗</button></div></section></div>';
+  document.getElementById("cancel-modal").onclick=()=>{modalRoot.innerHTML="";history.replaceState({}, "", location.pathname)};
+  document.getElementById("submit-modal").onclick=()=>{const name=document.getElementById("player-name").value.trim();if(!name){document.getElementById("modal-error").textContent="Escreve um nome para continuares.";return}modalRoot.innerHTML="";joinRoom(name,roomId)};
+  document.getElementById("player-name").focus();
+}
+function createRoom(name){
+  if(typeof Peer==="undefined"){showToast("Não foi possível carregar a ligação online.");return}
+  role="host";mySide=0;gameState=makeInitialState(name);
+  renderWait("host");
+  peer=new Peer();
+  peer.on("open",id=>{
+    gameState.room=id;
+    const url=location.origin+location.pathname+"?room="+encodeURIComponent(id);
+    const box=document.getElementById("invite-link-input");
+    if(box)box.value=isLocalAddress()?"Endereço local — publica em HTTPS para convidar alguém":url;
+  });
+  peer.on("connection",incoming=>{
+    if(conn){incoming.close();return}
+    conn=incoming;attachHostConnection();
+  });
+  peer.on("error",err=>{showToast("Falha de ligação: "+(err.type||"tenta novamente"));});
+}
+function attachHostConnection(){
+  conn.on("open",()=>setPeerStatus(true));
+  conn.on("data",msg=>{
+    if(!msg||!gameState)return;
+    if(msg.type==="join"){
+      if(gameState.names[1])return;
+      gameState.names[1]=String(msg.name||"Rival").slice(0,18);
+      gameState.phase="playing";
+      sendState();
+      return;
+    }
+    if(msg.type==="action")handleHostAction(1,msg.action,msg.data||{});
+  });
+  conn.on("close",()=>{setPeerStatus(false);showToast("O teu rival desligou-se.");});
+  conn.on("error",()=>showToast("A ligação com o rival teve um problema."));
+}
+function joinRoom(name,roomId){
+  if(typeof Peer==="undefined"){renderWait("guest");showToast("Não foi possível carregar a ligação online.");return}
+  role="guest";mySide=1;renderWait("guest");
+  peer=new Peer();
+  peer.on("open",()=>{
+    conn=peer.connect(roomId,{reliable:true});
+    conn.on("open",()=>{setPeerStatus(true);conn.send({type:"join",name:name})});
+    conn.on("data",msg=>{
+      if(msg&&msg.type==="state"){gameState=msg.state;chessEngine=null;selectedSquare=null;renderArena()}
+      if(msg&&msg.type==="error")showToast(msg.message||"Não foi possível entrar.");
+    });
+    conn.on("close",()=>{setPeerStatus(false);showToast("A ligação com a sala foi perdida.")});
+    conn.on("error",()=>showToast("Não foi possível ligar. Confirma que o link ainda está ativo."));
+  });
+  peer.on("error",err=>{showToast("Não foi possível ligar: "+(err.type||"confirma o convite"));});
+}
+function renderWait(which){
+  const isHost=which==="host";
+  app.innerHTML='<header class="topbar"><a class="brand" href="#"><span class="brand-mark">GD</span><span class="brand-name">GIGA<span>DUELO</span></span></a><div class="top-meta" id="connection-status"><span class="live-dot" style="background:var(--gold)"></span>'+(isHost?"A criar a sala":"A ligar à sala")+'</div></header><main class="wait-screen"><div class="wait-orbit"><span>'+(isHost?"♞":"⚔")+'</span></div><div class="eyebrow">'+(isHost?"SALA DE DUELO":"A ENTRAR NO DUELO")+'</div><h2>'+(isHost?"À espera do teu rival":"A preparar o tabuleiro")+'</h2><p>'+(isHost?"A tua sala está quase pronta. Copia o link e envia-o à pessoa que queres desafiar.":"Estamos a ligar-te à sala. Mantém esta página aberta.")+'</p>'+(isHost?'<div class="invite-link"><input id="invite-link-input" readonly value="A gerar link seguro…"><button class="btn btn-primary" id="copy-invite">Copiar link</button></div><p class="fineprint">O TEU RIVAL SÓ PRECISA DE ABRIR O LINK</p>':'')+'<p class="error" id="wait-error"></p><p class="fineprint">'+(isLocalAddress()?"ESTÁS NUM ENDEREÇO LOCAL (127.0.0.1). PARA CONVIDAR ALGUÉM, ABRE O SITE POR UM LINK HTTPS PÚBLICO.":"PARA PARTILHAR, USA O ENDEREÇO HTTPS PÚBLICO DO SITE.")+'</p></main>';
+  if(isHost)document.getElementById("copy-invite").onclick=copyInvite;
+}
+function copyInvite(){
+  const input=document.getElementById("invite-link-input");
+  if(isLocalAddress()){showToast("Este endereço só funciona no teu computador. Abre o site por um link HTTPS público.");return}
+  if(!input||!input.value.startsWith("http")){showToast("A preparar o link…");return}
+  navigator.clipboard.writeText(input.value).then(()=>showToast("Link copiado!")).catch(()=>{input.select();document.execCommand("copy");showToast("Link copiado!")});
+}
+function renderArena(){
+  if(!gameState){renderHome();return}
+  const hostName=escapeHtml(gameState.names[0]||"Jogador 1"),guestName=escapeHtml(gameState.names[1]||"À espera…");
+  if(gameState.phase==="waiting"){renderWait("host");return}
+  const game=gameMeta(gameState.game.id), roundNo=gameState.roundIndex+1;
+  const status=gameState.phase==="playing"?turnLabel():(gameState.phase==="champion"?"SÉRIE TERMINADA":"RESULTADO DA PARTIDA");
+  const scoreCard=(index,name)=>'<div class="player-card '+(index===1?"right":"")+'"><div class="avatar '+(index===1?"p2":"")+'">'+escapeHtml(initials(name))+'</div><div><div class="player-name">'+name+'</div><div class="player-label">'+(index===0?"Jogador 1":"Jogador 2")+'</div><div class="points">'+[0,1,2].map(i=>'<i class="point '+(i<(gameState.scores[index]||0)?"on p"+(index+1):"")+'"></i>').join("")+'</div></div><div class="score">'+(gameState.scores[index]||0)+'</div></div>';
+  app.innerHTML='<header class="topbar"><a class="brand" href="#"><span class="brand-mark">GD</span><span class="brand-name">GIGA<span>DUELO</span></span></a><div class="top-meta" id="connection-status"><span class="live-dot"></span>'+(gameState.phase==="playing"?"A jogar":"Série concluída")+'</div></header>'+
+  '<main class="arena"><div class="arena-head"><div class="room-id">SALA <b>'+(gameState.room?escapeHtml(gameState.room.slice(-8).toUpperCase()):"LOCAL")+'</b> · <span>'+gameState.scores[0]+'–'+gameState.scores[1]+'</span></div><div class="arena-actions"><button class="btn btn-secondary" id="share-btn">Partilhar link ↗</button><button class="btn btn-quiet" id="home-btn">Sair</button></div></div>'+
+  '<section class="scorebar">'+scoreCard(0,hostName)+'<div class="versus">VS</div>'+scoreCard(1,guestName)+'</section>'+
+  '<div class="match-layout"><section class="play-panel"><div class="play-head"><div class="game-title"><span class="game-icon">'+game.icon+'</span><div><h2>'+game.name+'</h2><p>Partida '+roundNo+' · '+(gameState.phase==="playing"?"primeiro a três":"resultado")+'</p></div></div><span class="turn-pill '+(gameState.phase!=="playing"?"wait":"")+'">'+status+'</span></div>'+
+  '<div class="board-zone">'+(gameState.phase==="waiting"?'<p>A aguardar o adversário…</p>':renderBoard())+'</div>'+
+  '<div class="play-foot"><span>'+game.hint+'</span><span class="mono">'+(gameState.phase==="playing"?(isMyTurn()?"A tua vez":"À espera da jogada do rival"):"")+'</span></div></section>'+
+  '<aside class="side-panel">'+renderSidePanel(roundNo)+'</aside></div></main>';
+  const share=document.getElementById("share-btn");if(share)share.onclick=()=>{if(isLocalAddress()){showToast("Este endereço só funciona no teu computador. Publica o site ou usa um túnel HTTPS.");return}if(gameState.room){const url=location.origin+location.pathname+"?room="+encodeURIComponent(gameState.room);navigator.clipboard.writeText(url).then(()=>showToast("Link copiado!")).catch(()=>showToast(url))}else showToast("O link está disponível ao criar uma sala.")};
+  document.getElementById("home-btn").onclick=()=>{if(peer)peer.destroy();peer=null;conn=null;gameState=null;role=null;renderHome()};
+  bindBoardEvents();
+  document.querySelectorAll("[data-vote]").forEach(button=>button.onclick=()=>sendAction("vote",{choice:button.dataset.vote}));
+}
+function turnLabel(){
+  if(!gameState||gameState.phase!=="playing")return "A AGUARDAR";
+  const active=activePlayer();return active===mySide?"A TUA VEZ":"VEZ DO RIVAL";
+}
+function activePlayer(){
+  const g=gameState.game;
+  if(g.id==="chess"){
+    const engine=new Chess(g.fen);
+    return engine.turn()==="w"?g.starter:1-g.starter;
+  }
+  return g.turn;
+}
+function isMyTurn(){return gameState&&gameState.phase==="playing"&&activePlayer()===mySide}
+function renderSidePanel(roundNo){
+  const order=gameState.order||[];
+  const rows=order.map((id,i)=>{
+    const done=i<gameState.roundIndex,active=i===gameState.roundIndex;
+    return '<div class="game-row '+(active?"current ":"")+(done?"done":"")+'"><span class="game-num">0'+(i+1)+'</span><span class="game-mini-icon">'+gameMeta(id).icon+'</span><strong>'+gameMeta(id).name+'</strong><span class="game-status">'+(active?"A JOGAR":done?"FEITO":"")+'</span></div>'
+  }).join("");
+  let footer='';
+  if(gameState.phase==="vote"){
+    const chosen=gameState.votes[mySide],other=gameState.votes[1-mySide];
+    let message=chosen?(other==="revenge"?"Os dois pediram desforra!":"Escolheste "+(chosen==="revenge"?"desforra":"seguir")+". À espera da decisão do rival."):"";
+    footer='<div class="result-card"><h4>'+(gameState.result&&gameState.result.winner===null?"EMPATE":(gameState.result&&gameState.result.winner===mySide?"GANHASTE A PARTIDA":"O RIVAL GANHOU"))+'</h4><p>'+escapeHtml(gameState.result?gameState.result.text:"")+'</p>'+(chosen?'<div class="choice-wait">'+escapeHtml(message)+'</div>':'<div class="result-actions"><button class="btn btn-secondary" data-vote="revenge">↻ Pedir desforra</button><button class="btn btn-primary" data-vote="next">Próximo jogo →</button></div>')+'</div>';
+  } else if(gameState.phase==="champion"){
+    const winner=gameState.winner;
+    footer='<div class="champion"><div class="trophy">🏆</div><h3>'+escapeHtml(gameState.names[winner])+' venceu!</h3><p>Primeiro a chegar aos 3 pontos.</p></div>';
+  } else {
+    const nextPoint=3-Math.max(gameState.scores[0],gameState.scores[1]);
+    footer='<div class="side-rule"></div><p class="side-note"><b>Até aos 3 pontos.</b> Uma vitória vale um ponto. Se ambos pedirem desforra, repetem este jogo; se alguém escolher seguir, a série continua.</p><div class="side-rule"></div><p class="series-label">A '+nextPoint+' '+(nextPoint===1?"ponto":"pontos")+' da vitória</p>';
+  }
+  return '<div class="side-title"><h3>A série</h3><span class="series-label">ORDEM ALEATÓRIA</span></div><div class="progress-track"><div class="progress-fill" style="width:'+Math.min(100,gameState.scores.reduce((a,b)=>a+b,0)/3*100)+'%"></div></div><div class="game-list">'+rows+'</div>'+footer;
+}
+function renderBoard(){
+  if(gameState.game.id==="chess")return renderChessBoard();
+  if(gameState.game.id==="connect4")return renderConnectBoard();
+  if(gameState.game.id==="checkers")return renderCheckersBoard();
+  return renderReversiBoard();
+}
+function renderChessBoard(){
+  let engine;try{engine=new Chess(gameState.game.fen)}catch(e){return ""}
+  const board=engine.board(),flip=gameState.game.starter!==mySide;
+  const legal=selectedSquare&&isMyTurn()?engine.moves({square:selectedSquare,verbose:true}).map(m=>m.to):[];
+  let html='<div class="board chess-board">';
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const rank=flip?r+1:8-r,fileIdx=flip?7-c:c,file=String.fromCharCode(97+fileIdx),sq=file+rank,piece=board[8-rank][fileIdx];
+    const tone=(r+c)%2===0?"light":"dark",classes=["square",tone];
+    if(selectedSquare===sq)classes.push("selected");if(legal.includes(sq))classes.push("legal");if(piece)classes.push("has-piece");
+    const coord=(c===0?'<span class="coord">'+rank+'</span>':"")+(r===7?'<span class="coord" style="left:auto;right:3px">'+file+'</span>':"");
+    html+='<button class="'+classes.join(" ")+'" data-square="'+sq+'">'+(piece?'<span class="piece '+(piece.color==="w"?"white":"black")+'">'+PIECES[piece.color+piece.type]+'</span>':"")+coord+'</button>';
+  }
+  return html+'</div>';
+}
+function renderConnectBoard(){
+  const g=gameState.game;let html='<div class="drop-board">';
+  for(let c=0;c<7;c++){html+='<button class="drop-col" data-col="'+c+'" aria-label="Largar peça na coluna '+(c+1)+'">';for(let r=0;r<6;r++){const v=g.board[r][c];html+='<span class="drop-slot">'+(v?'<i class="disc '+(v===2?"p2":"")+'"></i>':"")+'</span>'}html+='</button>'}
+  return html+'</div>';
+}
+function renderReversiBoard(){
+  const g=gameState.game,legal=isMyTurn()?reversiLegal(g.board,g.turn):[];
+  let html='<div class="reversi-board board">';
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const v=g.board[r][c],isLegal=legal.some(m=>m.r===r&&m.c===c);
+    html+='<button class="reversi-cell '+(isLegal?"legal":"")+'" data-cell="'+r+','+c+'">'+(v?'<i class="stone '+(v===2?"p2":"")+'"></i>':"")+'</button>';
+  }
+  return html+'</div>';
+}
+function checkerMoves(board,player,forced){
+  const dirs=player===0?[-1]:[1],captures=[],steps=[];
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++){
+    const v=board[r][c],owner=(v===1||v===3)?0:(v===2||v===4)?1:-1;
+    if(owner!==player||(forced&&(forced.r!==r||forced.c!==c)))continue;
+    const king=v>=3,allDirs=king?[-1,1]:dirs;
+    for(const dr of allDirs)for(const dc of [-1,1]){
+      const nr=r+dr,nc=c+dc;
+      if(nr<0||nr>7||nc<0||nc>7)continue;
+      if(board[nr][nc]===0)steps.push({from:{r:r,c:c},to:{r:nr,c:nc},capture:null});
+      else{
+        const target=board[nr][nc],enemy=(target===1||target===3)?0:(target===2||target===4)?1:-1;
+        const jr=r+dr*2,jc=c+dc*2;
+        if(enemy!==-1&&enemy!==player&&jr>=0&&jr<8&&jc>=0&&jc<8&&board[jr][jc]===0)captures.push({from:{r:r,c:c},to:{r:jr,c:jc},capture:{r:nr,c:nc}});
+      }
+    }
+  }
+  return captures.length?captures:steps;
+}
+function renderCheckersBoard(){
+  const g=gameState.game,flip=mySide===1,legal=gameState.phase==="playing"&&isMyTurn()?checkerMoves(g.board,g.turn,g.forced):[];
+  let html='<div class="checkers-board board">';
+  for(let rr=0;rr<8;rr++)for(let cc=0;cc<8;cc++){
+    const r=flip?7-rr:rr,c=flip?7-cc:cc,v=g.board[r][c],classes=["checker-square",(rr+cc)%2?"dark":"light"];
+    if(selectedSquare===r+","+c)classes.push("selected");
+    if(legal.some(m=>m.from.r===r&&m.from.c===c))classes.push("movable");
+    const destination=legal.some(m=>m.to.r===r&&m.to.c===c);if(destination)classes.push("legal");
+    html+='<button class="'+classes.join(" ")+'" data-checker="'+r+','+c+'">'+(v?'<i class="checker '+((v===1||v===3)?"p1":"p2")+'">'+(v>=3?"♛":"")+'</i>':"")+'</button>';
+  }
+  return html+'</div>';
+}
+function bindBoardEvents(){
+  document.querySelectorAll("[data-square]").forEach(el=>el.onclick=()=>handleChessClick(el.dataset.square));
+  document.querySelectorAll("[data-col]").forEach(el=>el.onclick=()=>{if(isMyTurn())sendAction("move",{col:Number(el.dataset.col)})});
+  document.querySelectorAll("[data-cell]").forEach(el=>el.onclick=()=>{if(isMyTurn()){const parts=el.dataset.cell.split(",");sendAction("move",{r:Number(parts[0]),c:Number(parts[1])})}});
+  document.querySelectorAll("[data-checker]").forEach(el=>el.onclick=()=>handleCheckerClick(el.dataset.checker));
+}
+function handleChessClick(square){
+  if(!isMyTurn())return;
+  const engine=new Chess(gameState.game.fen),piece=engine.get(square);
+  if(selectedSquare){
+    const choices=engine.moves({square:selectedSquare,verbose:true});
+    if(choices.some(m=>m.to===square)){sendAction("move",{from:selectedSquare,to:square,promotion:"q"});selectedSquare=null;return}
+  }
+  if(piece&&piece.color===(activePlayer()===gameState.game.starter?"w":"b"))selectedSquare=square;else selectedSquare=null;
+  renderArena();
+}
+function handleCheckerClick(pos){
+  if(!isMyTurn())return;
+  const parts=pos.split(",").map(Number),r=parts[0],c=parts[1],g=gameState.game;
+  const moves=checkerMoves(g.board,g.turn,g.forced);
+  if(selectedSquare){
+    const [sr,sc]=selectedSquare.split(",").map(Number);
+    if(moves.some(m=>m.from.r===sr&&m.from.c===sc&&m.to.r===r&&m.to.c===c)){sendAction("move",{from:{r:sr,c:sc},to:{r:r,c:c}});selectedSquare=null;return}
+  }
+  const value=g.board[r][c],owner=(value===1||value===3)?0:(value===2||value===4)?1:-1;
+  selectedSquare=owner===g.turn?r+","+c:null;renderArena();
+}
+function sendAction(action,data){
+  if(role==="host")handleHostAction(0,action,data);
+  else if(conn&&conn.open)conn.send({type:"action",action:action,data:data});
+}
+function handleHostAction(side,action,data){
+  if(!gameState)return;
+  if(action==="vote"&&gameState.phase==="vote"){
+    gameState.votes[side]=data.choice;
+    if(data.choice==="next"){nextGame();return}
+    if(gameState.votes[0]==="revenge"&&gameState.votes[1]==="revenge"){
+      gameState.phase="playing";gameState.result=null;gameState.votes=[null,null];gameState.game=newGame(gameState.game.id);selectedSquare=null;sendState();return;
+    }
+    sendState();return;
+  }
+  if(action!=="move"||gameState.phase!=="playing"||activePlayer()!==side)return;
+  const g=gameState.game;
+  if(g.id==="chess"){
+    try{
+      const engine=chessEngine||new Chess(g.fen);
+      const move=engine.move({from:data.from,to:data.to,promotion:data.promotion||"q"});
+      if(!move)return;
+      chessEngine=engine;g.fen=engine.fen();selectedSquare=null;
+      if(engine.isCheckmate()){finishGame(side,"Xeque-mate! "+gameState.names[side]+" ganha.");return}
+      if(engine.isDraw()){finishGame(null,"Empate por regras de xadrez.");return}
+    }catch(e){return}
+  }else if(g.id==="connect4"){
+    const c=data.col;if(!Number.isInteger(c)||c<0||c>6)return;
+    let row=-1;for(let r=5;r>=0;r--)if(g.board[r][c]===0){row=r;break}if(row<0)return;
+    g.board[row][c]=side+1;
+    if(connectWins(g.board,row,c,side+1)){finishGame(side,gameState.names[side]+" alinha quatro peças.");return}
+    if(g.board.every(row=>row.every(v=>v))){finishGame(null,"O tabuleiro encheu. Empate.");return}
+    g.turn=1-side;
+  }else if(g.id==="reversi"){
+    const legal=reversiLegal(g.board,side),move=legal.find(m=>m.r===data.r&&m.c===data.c);if(!move)return;
+    g.board[move.r][move.c]=side+1;for(const [r,c] of move.flips)g.board[r][c]=side+1;
+    let next=1-side;
+    if(reversiLegal(g.board,next).length===0){if(reversiLegal(g.board,side).length===0){const counts=countReversi(g.board);finishGame(counts[0]===counts[1]?null:counts[0]>counts[1]?0:1,"Reversi: "+counts[0]+" contra "+counts[1]+" peças.");return}next=side}
+    g.turn=next;
+  }else if(g.id==="checkers"){
+    const moves=checkerMoves(g.board,side,g.forced),move=moves.find(m=>m.from.r===data.from.r&&m.from.c===data.from.c&&m.to.r===data.to.r&&m.to.c===data.to.c);if(!move)return;
+    let value=g.board[move.from.r][move.from.c];g.board[move.from.r][move.from.c]=0;g.board[move.to.r][move.to.c]=value;
+    if(move.capture)g.board[move.capture.r][move.capture.c]=0;
+    if((side===0&&move.to.r===0&&value===1)||(side===1&&move.to.r===7&&value===2))g.board[move.to.r][move.to.c]=value+2;
+    if(move.capture){
+      const follow=checkerMoves(g.board,side,move.to);
+      if(follow.some(m=>m.capture)){g.forced=move.to;g.turn=side}
+      else{g.forced=null;g.turn=1-side}
+    }else{g.forced=null;g.turn=1-side}
+    const enemy=1-side,enemyPieces=g.board.flat().filter(v=>v&&((enemy===0&&(v===1||v===3))||(enemy===1&&(v===2||v===4)))).length;
+    if(!enemyPieces||checkerMoves(g.board,enemy,null).length===0){finishGame(side,gameState.names[side]+" ganha às damas.");return}
+  }
+  sendState();
+}
+function connectWins(board,r,c,player){
+  const dirs=[[1,0],[0,1],[1,1],[1,-1]];
+  return dirs.some(([dr,dc])=>{
+    let count=1;for(const d of [-1,1]){let nr=r+dr*d,nc=c+dc*d;while(nr>=0&&nr<6&&nc>=0&&nc<7&&board[nr][nc]===player){count++;nr+=dr*d;nc+=dc*d}}
+    return count>=4
+  });
+}
+function reversiLegal(board,player){
+  const out=[],enemy=2-player;
+  for(let r=0;r<8;r++)for(let c=0;c<8;c++)if(!board[r][c]){
+    const flips=[];
+    for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;let rr=r+dr,cc=c+dc,path=[];while(rr>=0&&rr<8&&cc>=0&&cc<8&&board[rr][cc]===enemy){path.push([rr,cc]);rr+=dr;cc+=dc}if(path.length&&rr>=0&&rr<8&&cc>=0&&cc<8&&board[rr][cc]===player)flips.push(...path)}
+    if(flips.length)out.push({r:r,c:c,flips:flips});
+  }
+  return out;
+}
+function countReversi(board){let a=0,b=0;board.flat().forEach(v=>{if(v===1)a++;if(v===2)b++});return [a,b]}
+function finishGame(winner,text){
+  if(winner!==null)gameState.scores[winner]++;
+  gameState.result={winner:winner,text:text};
+  if(winner!==null&&gameState.scores[winner]>=3){gameState.phase="champion";gameState.winner=winner}
+  else{gameState.phase="vote";gameState.votes=[null,null]}
+  sendState();
+}
+function nextGame(){
+  gameState.roundIndex++;
+  if(gameState.roundIndex>=gameState.order.length){gameState.order=shuffle(GAMES.map(g=>g.id));gameState.roundIndex=0}
+  gameState.phase="playing";gameState.votes=[null,null];gameState.result=null;gameState.game=newGame(gameState.order[gameState.roundIndex]);selectedSquare=null;sendState();
+}
+function startFromUrl(){
+  renderHome();
+  const room=new URLSearchParams(location.search).get("room");
+  if(room)showJoinPrompt(room);
+}
+startFromUrl();
+</script>
+</body>
+</html>
+
